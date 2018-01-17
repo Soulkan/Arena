@@ -1,6 +1,7 @@
 package com.example.arena;
 
-import com.example.arena.model.postacie.*;
+import com.example.arena.model.postacie.Istota;
+import com.example.arena.model.postacie.TypPostaciEnum;
 import com.example.arena.model.wyposazenie.TypyBroniEnum;
 import com.example.arena.service.TworzeniePostaciService;
 import com.example.arena.service.WalkaService;
@@ -15,17 +16,17 @@ public class ArenaApplication {
     public static void main(String[] args) {
         TworzeniePostaciService tps = new TworzeniePostaciService();
         Istota postac1 = tps.stworzIstote(TypPostaciEnum.CZLOWIEK);
-        postac1.setName("Józek");
+        postac1.setName("Jarek K");
         Istota postac2 = tps.stworzIstote(TypPostaciEnum.ORK);
         postac2.setName("Morawiecki");
         Istota postac3 = tps.stworzIstote(TypPostaciEnum.KRASNOLUD);
-        postac3.setName("Gienek");
+        postac3.setName("Bill");
         Istota postac4 = tps.stworzIstote(TypPostaciEnum.ELF);
         postac4.setName("Orlando");
         Istota postac5 = tps.stworzIstote(TypPostaciEnum.HALFING);
-        postac5.setName("Kaczoras");
+        postac5.setName("Żydek");
         Istota postac6 = tps.stworzIstote(TypPostaciEnum.TROLL);
-        postac6.setName("Ziom");
+        postac6.setName("Golum");
 
         List<Istota> listaIstot = new ArrayList<>();
         listaIstot.add(postac1);
@@ -36,13 +37,11 @@ public class ArenaApplication {
         listaIstot.add(postac6);
         WalkaService ws = new WalkaService();
         ws.prezentacja(listaIstot);
-        boolean rezultatUderzenia = postac1.uderz(postac2, TypyBroniEnum.MIECZ);
-        if(rezultatUderzenia == true) {
-            postac2.unik(postac1, TypyBroniEnum.MIECZ);
-        }
-        rezultatUderzenia = postac1.strzel(postac5, TypyBroniEnum.LUK);
-        if(rezultatUderzenia == true) {
-            postac5.unik(postac1, TypyBroniEnum.LUK);
+
+        int rezultatUderzenia = postac1.uderz(postac2, TypyBroniEnum.MIECZ);
+        if (rezultatUderzenia > 0) {
+            postac2.unik(postac1, rezultatUderzenia);
         }
     }
 }
+

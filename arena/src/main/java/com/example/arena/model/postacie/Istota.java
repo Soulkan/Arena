@@ -6,13 +6,16 @@ import static com.example.arena.service.WalkaService.losuj;
 
 public abstract class Istota implements FunkcjeIstoty {
 
-    public Istota(Integer nowaSila, Integer nowaZwinnosc, Integer nowaWytrzymalosc, Integer nowaSzybkosc, Integer nowaInicjatywa, TypPostaciEnum nowyTypPostaci) {
+    public Istota(Integer nowaSila, Integer nowaZwinnosc, Integer nowaWytrzymalosc, Integer nowaSzybkosc, Integer nowaInicjatywa, TypPostaciEnum nowyTypPostaci, Integer nowaIloscAtakow,
+                  Integer nowePunktyZycia) {
         this.sila = nowaSila;
         this.zwinnosc = nowaZwinnosc;
         this.wytrzymalosc = nowaWytrzymalosc;
         this.szybkosc = nowaSzybkosc;
         this.inicjatywa = nowaInicjatywa;
         this.typPostaci = nowyTypPostaci;
+        this.iloscAtakow = nowaIloscAtakow;
+        this.punktyZycia = nowePunktyZycia;
     }
 
     private TypPostaciEnum typPostaci;
@@ -81,6 +84,26 @@ public abstract class Istota implements FunkcjeIstoty {
 
     private Integer inicjatywa;
 
+    private Integer punktyZycia;
+
+    public Integer getPunktyZycia() {
+        return punktyZycia;
+    }
+
+    public void setPunktyZycia(Integer punktyZycia) {
+        this.punktyZycia = punktyZycia;
+    }
+
+    private Integer iloscAtakow;
+
+    public Integer getIloscAtakow() {
+        return iloscAtakow;
+    }
+
+    public void setIloscAtakow(Integer iloscAtakow) {
+        this.iloscAtakow = iloscAtakow;
+    }
+
     @Override
     public String toString() {
         return "name: " + name + " sila: " + sila + " zwinnosc: " + zwinnosc + " wytrzymalosc: " + wytrzymalosc + " szybkosc: " + szybkosc
@@ -88,19 +111,22 @@ public abstract class Istota implements FunkcjeIstoty {
     }
 
     @Override
-    public boolean uderz(Istota targetInnaIstota, TypyBroniEnum bronBiala) {
+    public int uderz(Istota targetInnaIstota, TypyBroniEnum bronBiala) {
+        int sumaObrazen = 0;
         if (getName().equals(targetInnaIstota.getName())) {
             System.out.println("Nie moge sam siebie uderzyc");
-            return false;
         } else {
             if (getZwinnosc() > targetInnaIstota.getZwinnosc()) {
-                System.out.println("Postac " + targetInnaIstota.getName() + " zostala uderzona przez postac " + getName() + " za pomoca " + bronBiala.name());
-                return true;
+                int obrazenia = losuj(bronBiala.getObrazeniaMin(), bronBiala.getObrazeniaMax());
+                if (obrazenia > 0) {
+                    sumaObrazen = obrazenia + getSila();
+                } else {
+                }
             } else {
-                System.out.println("Postac " + getName() + " nie trafiła postaci " + targetInnaIstota.getName());
-                return false;
+                System.out.println("Postac " + targetInnaIstota.getName() + " uniknela uderzenia od " + getName());
             }
         }
+        return sumaObrazen;
     }
 
     @Override
@@ -110,20 +136,21 @@ public abstract class Istota implements FunkcjeIstoty {
     }
 
     @Override
-    public boolean unik(Istota targetInnaIstota, TypyBroniEnum bron) {
+    public void unik(Istota targetInnaIstota, int sumaObrazen) {
         if (getInicjatywa() > targetInnaIstota.getInicjatywa()) {
-            System.out.println("Postac " + getName() + " uniknela ciosu.");
-            return true;
+            System.out.println("Postac " + getName() + " uniknela ataku ze strony " + targetInnaIstota.getName());
         } else {
-            int obrazenia = losuj(bron.getObrazeniaMin(), bron.getObrazeniaMax());
-            System.out.println("Postac " + getName() + " nie uniknela ciosu. I dostała obrazenia = " + obrazenia);
-            if (obrazenia > getWytrzymalosc()) {
-                System.out.println(getName() + " w wyniku poniesionych obrazen nie zyje.");
+            int zadaneObrazenia = sumaObrazen - getWytrzymalosc();
+            if (zadaneObrazenia > 0) {
+                int rezultatUderzenia = targetInnaIstota.getPunktyZycia() - zadaneObrazenia;
+                if (rezultatUderzenia > 0) {
+                    System.out.println("W wyniku poniesionych obrazen postaci " + targetInnaIstota.getName() + " pozostalo " + rezultatUderzenia + " punktow zycia");
+                } else {
+                    System.out.println("Postac " + getName() + " smiertelnie ranila " + targetInnaIstota.getName());
+                }
             } else {
-                int rezultatObrazen = getWytrzymalosc() - obrazenia;
-                System.out.println("W wyniku poniesionych obrazen " + getName() + " pozostalo " + rezultatObrazen + " punktow zycia");
+                System.out.println("Dzieki wytrzymalosci postac " + targetInnaIstota.getName() + " odparla atak ze strony " + getName());
             }
-            return false;
         }
     }
 }

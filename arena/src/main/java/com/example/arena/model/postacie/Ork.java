@@ -6,6 +6,6 @@ package com.example.arena.model.postacie;
 public class Ork extends Istota {
 
 
-    public Ork(Integer sila, Integer zwinnosc, Integer wytrzymalosc, Integer szybkosc, Integer inicjatywa) {
-        super(sila, zwinnosc, wytrzymalosc, szybkosc, inicjatywa, TypPostaciEnum.ORK);
+    public Ork(Integer sila, Integer zwinnosc, Integer wytrzymalosc, Integer szybkosc, Integer inicjatywa, Integer nowePunktyZycia) {
+        super(sila, zwinnosc, wytrzymalosc, szybkosc, inicjatywa, TypPostaciEnum.ORK, 1, nowePunktyZycia);
     }}
